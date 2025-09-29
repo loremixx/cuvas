@@ -1,175 +1,468 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <title>Çuvaşça İyelik Çekimleyici</title>
-  <script defer src="https://pyscript.net/latest/pyscript.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 800px;
-      margin: 40px auto;
-      text-align: center;
-    }
-    input, select, button {
-      padding: 8px;
-      margin: 5px;
-      font-size: 16px;
-    }
-    #sonuc {
-      margin-top: 20px;
-      font-weight: bold;
-      font-size: 20px;
-      color: darkblue;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çuvaşça İyelik Eki Çekimleyici</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .result-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .result-section h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .result {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+        
+        .explanation {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .person-codes {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        
+        .person-codes h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .code-item {
+            display: flex;
+            margin-bottom: 5px;
+        }
+        
+        .code {
+            font-weight: bold;
+            width: 60px;
+            color: #3498db;
+        }
+        
+        .code-description {
+            flex: 1;
+        }
+        
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
 <body>
-  <h1>Çuvaşça İyelik Eki Çekimleyici</h1>
-  <p>Kelimeyi gir, şahıs seç, çoğul iste → sonucu gör 🎉</p>
+    <div class="container">
+        <header>
+            <h1>Çuvaşça İyelik Eki Çekimleyici</h1>
+            <p class="description">Çuvaşça kelimelerin iyelik eklerini çekimlemek için bu aracı kullanın</p>
+        </header>
+        
+        <section class="input-section">
+            <div class="form-group">
+                <label for="word">Çuvaşça Kelime:</label>
+                <input type="text" id="word" placeholder="Örnek: ача, пулӑ, хӗр">
+            </div>
+            
+            <div class="form-group">
+                <label for="person">Şahıs:</label>
+                <select id="person">
+                    <option value="1sg">1. Tekil Şahıs (benim)</option>
+                    <option value="2sg">2. Tekil Şahıs (senin)</option>
+                    <option value="3sg">3. Tekil Şahıs (onun)</option>
+                    <option value="1pl">1. Çoğul Şahıs (bizim)</option>
+                    <option value="2pl">2. Çoğul Şahıs (sizin)</option>
+                    <option value="3pl">3. Çoğul Şahıs (onların)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="plural">
+                    <label for="plural">Çoğul yap</label>
+                </div>
+            </div>
+            
+            <button id="conjugate-btn">Çekimle</button>
+        </section>
+        
+        <section class="result-section" id="result-section">
+            <h2>Sonuç</h2>
+            <div class="result" id="result"></div>
+            <div class="explanation" id="explanation"></div>
+        </section>
+        
+        <div class="person-codes">
+            <h3>Şahıs Kodları Açıklaması</h3>
+            <div class="code-item">
+                <div class="code">1sg</div>
+                <div class="code-description">1. tekil şahıs (benim)</div>
+            </div>
+            <div class="code-item">
+                <div class="code">2sg</div>
+                <div class="code-description">2. tekil şahıs (senin)</div>
+            </div>
+            <div class="code-item">
+                <div class="code">3sg</div>
+                <div class="code-description">3. tekil şahıs (onun)</div>
+            </div>
+            <div class="code-item">
+                <div class="code">1pl</div>
+                <div class="code-description">1. çoğul şahıs (bizim)</div>
+            </div>
+            <div class="code-item">
+                <div class="code">2pl</div>
+                <div class="code-description">2. çoğul şahıs (sizin)</div>
+            </div>
+            <div class="code-item">
+                <div class="code">3pl</div>
+                <div class="code-description">3. çoğul şahıs (onların)</div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Çuvaşça İyelik Eki Çekimleyici | Python kodundan HTML'ye dönüştürülmüştür</p>
+        </footer>
+    </div>
 
-  <input id="kelime" type="text" placeholder="Kelimeyi gir">
-  <select id="sahis">
-    <option value="1sg">1sg (benim)</option>
-    <option value="2sg">2sg (senin)</option>
-    <option value="3sg">3sg (onun)</option>
-    <option value="1pl">1pl (bizim)</option>
-    <option value="2pl">2pl (sizin)</option>
-    <option value="3pl">3pl (onların)</option>
-  </select>
-  <label>
-    <input id="cogul" type="checkbox"> Çoğul ekle
-  </label>
-  <button onclick="cekimle()">Çekimle</button>
+    <script>
+        // Python kodunun JavaScript uyarlaması
+        const VOWELS = new Set(['а', 'ӑ', 'ы', 'у', 'э', 'ӗ', 'и', 'ӳ']);
+        const CONSONANTS = new Set(['й', 'ц', 'к', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ф', 'в', 'п', 'р', 'л', 'д', 'ж', 'ч', 'с', 'м', 'т', 'б', 'ю', 'я']);
+        const BACK_VOWELS = new Set(['а', 'ӑ', 'ы', 'у']);
+        const FRONT_VOWELS = new Set(['э', 'ӗ', 'и', 'ӳ']);
 
-  <div id="sonuc">Sonuç burada görünecek</div>
+        function getVowelHarmony(word) {
+            for (let i = word.length - 1; i >= 0; i--) {
+                const char = word[i];
+                if (BACK_VOWELS.has(char)) return 'back';
+                if (FRONT_VOWELS.has(char)) return 'front';
+            }
+            return 'back';
+        }
 
-  <py-script>
-# -*- coding: utf-8 -*-
-from js import document
+        function getLastLetterType(word) {
+            if (!word) return 'consonant';
+            return VOWELS.has(word[word.length - 1]) ? 'vowel' : 'consonant';
+        }
 
-VOWELS = {'а','ӑ','ы','у','э','ӗ','и','ӳ'}
-CONSONANTS = {'й','ц','к','н','г','ш','щ','з','х','ф','в','п','р','л','д','ж','ч','с','м','т','б','ю','я'}
-BACK_VOWELS = {'а','ӑ','ы','у'}
-FRONT_VOWELS = {'э','ӗ','и','ӳ'}
+        function hasSingleConsonantBeforeĂĔ(word) {
+            if (word.length >= 2 && (word[word.length - 1] === 'ӑ' || word[word.length - 1] === 'ӗ')) {
+                if (CONSONANTS.has(word[word.length - 2])) {
+                    let vowelCount = 0;
+                    for (const char of word) {
+                        if (VOWELS.has(char)) vowelCount++;
+                    }
+                    return vowelCount >= 2;
+                }
+            }
+            return false;
+        }
 
-def get_vowel_harmony(word):
-    for char in reversed(word):
-        if char in BACK_VOWELS:
-            return 'back'
-        elif char in FRONT_VOWELS:
-            return 'front'
-    return 'back'
+        function addFirstSingularPossessive(word) {
+            if (!word) return word;
+            
+            const harmony = getVowelHarmony(word);
+            const lastChar = word[word.length - 1];
+            
+            if (lastChar === 'у' || lastChar === 'ӳ') {
+                return word.slice(0, -1) + (harmony === 'back' ? 'ӑвӑм' : 'ӗвӗм');
+            }
+            
+            if (hasSingleConsonantBeforeĂĔ(word)) {
+                const consonant = word[word.length - 2];
+                const stem = word.slice(0, -2) + consonant + consonant;
+                return stem + word[word.length - 1] + 'м';
+            }
+            
+            if (getLastLetterType(word) === 'consonant') {
+                return word + (harmony === 'back' ? 'ӑм' : 'ӗм');
+            }
+            
+            return word + 'м';
+        }
 
-def get_last_letter_type(word):
-    if not word: return 'consonant'
-    return 'vowel' if word[-1] in VOWELS else 'consonant'
+        function addSecondSingularPossessive(word) {
+            if (!word) return word;
+            
+            const harmony = getVowelHarmony(word);
+            const lastChar = word[word.length - 1];
+            const suffix = harmony === 'back' ? 'у' : 'ӳ';
+            
+            if (lastChar === 'а' || lastChar === 'э') {
+                return word.slice(0, -1) + suffix;
+            }
+            
+            if (hasSingleConsonantBeforeĂĔ(word)) {
+                const consonant = word[word.length - 2];
+                const stem = word.slice(0, -2) + consonant + consonant;
+                return stem + suffix;
+            }
+            
+            return word + suffix;
+        }
 
-def has_single_consonant_before_ăĕ(word):
-    if len(word) >= 2 and word[-1] in {'ӑ','ӗ'}:
-        if word[-2] in CONSONANTS:
-            vowel_count = sum(1 for char in word if char in VOWELS)
-            return vowel_count >= 2
-    return False
+        function addThirdSingularPossessive(word) {
+            if (!word) return word;
+            
+            const harmony = getVowelHarmony(word);
+            const lastChar = word[word.length - 1];
+            
+            if (lastChar === 'т' || lastChar === 'д') {
+                return word.slice(0, -1) + 'чӗ';
+            }
+            
+            if (lastChar === 'у' || lastChar === 'ӳ') {
+                return word.slice(0, -1) + (harmony === 'back' ? 'ӑвӗ' : 'ӗвӗ');
+            }
+            
+            if (lastChar === 'и') {
+                return word + 'йӗ';
+            }
+            
+            if (lastChar === 'а' || lastChar === 'э' || lastChar === 'ӑ' || lastChar === 'ӗ') {
+                if ((lastChar === 'ӑ' || lastChar === 'ӗ') && hasSingleConsonantBeforeĂĔ(word)) {
+                    const consonant = word[word.length - 2];
+                    const stem = word.slice(0, -2) + consonant + consonant;
+                    return stem + 'ӗ';
+                } else {
+                    return word.slice(0, -1) + 'ӗ';
+                }
+            }
+            
+            return word + 'ӗ';
+        }
 
-def add_first_singular_possessive(word):
-    if not word: return word
-    harmony = get_vowel_harmony(word)
-    last_char = word[-1]
-    if last_char in {'у','ӳ'}:
-        return word[:-1] + ('ӑвӑм' if harmony=='back' else 'ӗвӗм')
-    if has_single_consonant_before_ăĕ(word):
-        c = word[-2]
-        stem = word[:-2] + c*2
-        return stem + word[-1] + 'м'
-    if get_last_letter_type(word) == 'consonant':
-        return word + ('ӑм' if harmony=='back' else 'ӗм')
-    return word + 'м'
+        function addFirstPluralPossessive(word) {
+            if (!word) return word;
+            
+            const harmony = getVowelHarmony(word);
+            const lastChar = word[word.length - 1];
+            
+            if (lastChar === 'у' || lastChar === 'ӳ') {
+                return word.slice(0, -1) + (harmony === 'back' ? 'ӑвӑмӑр' : 'ӗвӗмӗр');
+            }
+            
+            if (hasSingleConsonantBeforeĂĔ(word)) {
+                const consonant = word[word.length - 2];
+                const stem = word.slice(0, -2) + consonant + consonant;
+                return harmony === 'back' ? stem + word[word.length - 1] + 'мӑр' : stem + word[word.length - 1] + 'мӗр';
+            }
+            
+            if (getLastLetterType(word) === 'consonant') {
+                return word + (harmony === 'back' ? 'ӑмӑр' : 'ӗмӗр');
+            }
+            
+            return word + (harmony === 'back' ? 'мӑр' : 'мӗр');
+        }
 
-def add_second_singular_possessive(word):
-    if not word: return word
-    harmony = get_vowel_harmony(word)
-    last_char = word[-1]
-    suffix = 'у' if harmony=='back' else 'ӳ'
-    if last_char in {'а','э'}:
-        return word[:-1] + suffix
-    if has_single_consonant_before_ăĕ(word):
-        c = word[-2]
-        stem = word[:-2] + c*2
-        return stem + suffix
-    return word + suffix
+        function addSecondPluralPossessive(word) {
+            if (!word) return word;
+            
+            const harmony = getVowelHarmony(word);
+            const lastChar = word[word.length - 1];
+            
+            if (lastChar === 'у' || lastChar === 'ӳ') {
+                return word.slice(0, -1) + (harmony === 'back' ? 'ӑвӑр' : 'ӗвӗр');
+            }
+            
+            if (hasSingleConsonantBeforeĂĔ(word)) {
+                const consonant = word[word.length - 2];
+                const stem = word.slice(0, -2) + consonant + consonant;
+                return harmony === 'back' ? stem + 'ӑр' : stem + 'ӗр';
+            }
+            
+            if (getLastLetterType(word) === 'consonant') {
+                return word + (harmony === 'back' ? 'ӑр' : 'ӗр');
+            }
+            
+            return word + 'р';
+        }
 
-def add_third_singular_possessive(word):
-    if not word: return word
-    harmony = get_vowel_harmony(word)
-    last_char = word[-1]
-    if last_char in {'т','д'}:
-        return word[:-1] + 'чӗ'
-    if last_char in {'у','ӳ'}:
-        return word[:-1] + ('ӑвӗ' if harmony=='back' else 'ӗвӗ')
-    if last_char == 'и':
-        return word + 'йӗ'
-    if last_char in {'а','э','ӑ','ӗ'}:
-        if last_char in {'ӑ','ӗ'} and has_single_consonant_before_ăĕ(word):
-            c = word[-2]
-            stem = word[:-2] + c*2
-            return stem + 'ӗ'
-        else:
-            return word[:-1] + 'ӗ'
-    return word + 'ӗ'
+        function addThirdPluralPossessive(word) {
+            return addThirdSingularPossessive(word);
+        }
 
-def add_first_plural_possessive(word):
-    if not word: return word
-    harmony = get_vowel_harmony(word)
-    last_char = word[-1]
-    if last_char in {'у','ӳ'}:
-        return word[:-1] + ('ӑвӑмӑр' if harmony=='back' else 'ӗвӗмӗр')
-    if has_single_consonant_before_ăĕ(word):
-        c = word[-2]
-        stem = word[:-2] + c*2
-        return stem + word[-1] + ('мӑр' if harmony=='back' else 'мӗр')
-    if get_last_letter_type(word) == 'consonant':
-        return word + ('ӑмӑр' if harmony=='back' else 'ӗмӗr')
-    return word + ('мӑр' if harmony=='back' else 'мӗр')
+        function addPluralSuffix(word) {
+            return word + 'сем';
+        }
 
-def add_second_plural_possessive(word):
-    if not word: return word
-    harmony = get_vowel_harmony(word)
-    last_char = word[-1]
-    if last_char in {'у','ӳ'}:
-        return word[:-1] + ('ӑвӑр' if harmony=='back' else 'ӗвӗр')
-    if has_single_consonant_before_ăĕ(word):
-        c = word[-2]
-        stem = word[:-2] + c*2
-        return stem + ('ӑр' if harmony=='back' else 'ӗр')
-    if get_last_letter_type(word) == 'consonant':
-        return word + ('ӑр' if harmony=='back' else 'ӗр')
-    return word + 'р'
+        function conjugateChuvash(word, person, plural = false) {
+            if (!word) return word;
+            
+            let result;
+            
+            switch(person) {
+                case '1sg':
+                    result = addFirstSingularPossessive(word);
+                    break;
+                case '2sg':
+                    result = addSecondSingularPossessive(word);
+                    break;
+                case '3sg':
+                    result = addThirdSingularPossessive(word);
+                    break;
+                case '1pl':
+                    result = addFirstPluralPossessive(word);
+                    break;
+                case '2pl':
+                    result = addSecondPluralPossessive(word);
+                    break;
+                case '3pl':
+                    result = addThirdPluralPossessive(word);
+                    break;
+                default:
+                    result = word;
+            }
+            
+            if (plural) {
+                result = addPluralSuffix(result);
+            }
+            
+            return result;
+        }
 
-def add_third_plural_possessive(word):
-    return add_third_singular_possessive(word)
-
-def add_plural_suffix(word):
-    return word + 'сем'
-
-def conjugate_chuvash(word, person, plural=False):
-    if not word: return word
-    if person == '1sg': result = add_first_singular_possessive(word)
-    elif person == '2sg': result = add_second_singular_possessive(word)
-    elif person == '3sg': result = add_third_singular_possessive(word)
-    elif person == '1pl': result = add_first_plural_possessive(word)
-    elif person == '2pl': result = add_second_plural_possessive(word)
-    elif person == '3pl': result = add_third_plural_possessive(word)
-    else: result = word
-    if plural: result = add_plural_suffix(result)
-    return result
-
-def cekimle():
-    kelime = document.getElementById("kelime").value.strip()
-    sahis = document.getElementById("sahis").value
-    cogul = document.getElementById("cogul").checked
-    sonuc = conjugate_chuvash(kelime, sahis, cogul)
-    document.getElementById("sonuc").innerText = f"Sonuç: {sonuc}"
-  </py-script>
+        // HTML ile etkileşim
+        document.getElementById('conjugate-btn').addEventListener('click', function() {
+            const word = document.getElementById('word').value.trim();
+            const person = document.getElementById('person').value;
+            const plural = document.getElementById('plural').checked;
+            
+            if (!word) {
+                alert('Lütfen bir Çuvaşça kelime girin!');
+                return;
+            }
+            
+            const result = conjugateChuvash(word, person, plural);
+            
+            // Sonuçları göster
+            document.getElementById('result').textContent = result;
+            
+            const personNames = {
+                '1sg': '1. tekil şahıs (benim)',
+                '2sg': '2. tekil şahıs (senin)',
+                '3sg': '3. tekil şahıs (onun)',
+                '1pl': '1. çoğul şahıs (bizim)',
+                '2pl': '2. çoğul şahıs (sizin)',
+                '3pl': '3. çoğul şahıs (onların)'
+            };
+            
+            document.getElementById('explanation').textContent = 
+                `${word} kelimesinin ${personNames[person]} iyelik hali ${plural ? '(çoğul)' : '(tekil)'}`;
+            
+            document.getElementById('result-section').style.display = 'block';
+        });
+    </script>
 </body>
-      </html>
+                  </html>
