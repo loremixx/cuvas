@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Çuvaşça İyelik Çekimleyici</title>
+  <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      text-align: center;
+    }
+    input, select, button {
+      padding: 8px;
+      margin: 5px;
+      font-size: 16px;
+    }
+    #sonuc {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 20px;
+      color: darkblue;
+    }
+  </style>
+</head>
+<body>
+  <h1>Çuvaşça İyelik Eki Çekimleyici</h1>
+  <p>Kelimeyi gir, şahıs seç, çoğul iste → sonucu gör 🎉</p>
+
+  <input id="kelime" type="text" placeholder="Kelimeyi gir">
+  <select id="sahis">
+    <option value="1sg">1sg (benim)</option>
+    <option value="2sg">2sg (senin)</option>
+    <option value="3sg">3sg (onun)</option>
+    <option value="1pl">1pl (bizim)</option>
+    <option value="2pl">2pl (sizin)</option>
+    <option value="3pl">3pl (onların)</option>
+  </select>
+  <label>
+    <input id="cogul" type="checkbox"> Çoğul ekle
+  </label>
+  <button onclick="cekimle()">Çekimle</button>
+
+  <div id="sonuc">Sonuç burada görünecek</div>
+
+  <py-script>
+# -*- coding: utf-8 -*-
+from js import document
+
+VOWELS = {'а','ӑ','ы','у','э','ӗ','и','ӳ'}
+CONSONANTS = {'й','ц','к','н','г','ш','щ','з','х','ф','в','п','р','л','д','ж','ч','с','м','т','б','ю','я'}
+BACK_VOWELS = {'а','ӑ','ы','у'}
+FRONT_VOWELS = {'э','ӗ','и','ӳ'}
+
+def get_vowel_harmony(word):
+    for char in reversed(word):
+        if char in BACK_VOWELS:
+            return 'back'
+        elif char in FRONT_VOWELS:
+            return 'front'
+    return 'back'
+
+def get_last_letter_type(word):
+    if not word: return 'consonant'
+    return 'vowel' if word[-1] in VOWELS else 'consonant'
+
+def has_single_consonant_before_ăĕ(word):
+    if len(word) >= 2 and word[-1] in {'ӑ','ӗ'}:
+        if word[-2] in CONSONANTS:
+            vowel_count = sum(1 for char in word if char in VOWELS)
+            return vowel_count >= 2
+    return False
+
+def add_first_singular_possessive(word):
+    if not word: return word
+    harmony = get_vowel_harmony(word)
+    last_char = word[-1]
+    if last_char in {'у','ӳ'}:
+        return word[:-1] + ('ӑвӑм' if harmony=='back' else 'ӗвӗм')
+    if has_single_consonant_before_ăĕ(word):
+        c = word[-2]
+        stem = word[:-2] + c*2
+        return stem + word[-1] + 'м'
+    if get_last_letter_type(word) == 'consonant':
+        return word + ('ӑм' if harmony=='back' else 'ӗм')
+    return word + 'м'
+
+def add_second_singular_possessive(word):
+    if not word: return word
+    harmony = get_vowel_harmony(word)
+    last_char = word[-1]
+    suffix = 'у' if harmony=='back' else 'ӳ'
+    if last_char in {'а','э'}:
+        return word[:-1] + suffix
+    if has_single_consonant_before_ăĕ(word):
+        c = word[-2]
+        stem = word[:-2] + c*2
+        return stem + suffix
+    return word + suffix
+
+def add_third_singular_possessive(word):
+    if not word: return word
+    harmony = get_vowel_harmony(word)
+    last_char = word[-1]
+    if last_char in {'т','д'}:
+        return word[:-1] + 'чӗ'
+    if last_char in {'у','ӳ'}:
+        return word[:-1] + ('ӑвӗ' if harmony=='back' else 'ӗвӗ')
+    if last_char == 'и':
+        return word + 'йӗ'
+    if last_char in {'а','э','ӑ','ӗ'}:
+        if last_char in {'ӑ','ӗ'} and has_single_consonant_before_ăĕ(word):
+            c = word[-2]
+            stem = word[:-2] + c*2
+            return stem + 'ӗ'
+        else:
+            return word[:-1] + 'ӗ'
+    return word + 'ӗ'
+
+def add_first_plural_possessive(word):
+    if not word: return word
+    harmony = get_vowel_harmony(word)
+    last_char = word[-1]
+    if last_char in {'у','ӳ'}:
+        return word[:-1] + ('ӑвӑмӑр' if harmony=='back' else 'ӗвӗмӗр')
+    if has_single_consonant_before_ăĕ(word):
+        c = word[-2]
+        stem = word[:-2] + c*2
+        return stem + word[-1] + ('мӑр' if harmony=='back' else 'мӗр')
+    if get_last_letter_type(word) == 'consonant':
+        return word + ('ӑмӑр' if harmony=='back' else 'ӗмӗr')
+    return word + ('мӑр' if harmony=='back' else 'мӗр')
+
+def add_second_plural_possessive(word):
+    if not word: return word
+    harmony = get_vowel_harmony(word)
+    last_char = word[-1]
+    if last_char in {'у','ӳ'}:
+        return word[:-1] + ('ӑвӑр' if harmony=='back' else 'ӗвӗр')
+    if has_single_consonant_before_ăĕ(word):
+        c = word[-2]
+        stem = word[:-2] + c*2
+        return stem + ('ӑр' if harmony=='back' else 'ӗр')
+    if get_last_letter_type(word) == 'consonant':
+        return word + ('ӑр' if harmony=='back' else 'ӗр')
+    return word + 'р'
+
+def add_third_plural_possessive(word):
+    return add_third_singular_possessive(word)
+
+def add_plural_suffix(word):
+    return word + 'сем'
+
+def conjugate_chuvash(word, person, plural=False):
+    if not word: return word
+    if person == '1sg': result = add_first_singular_possessive(word)
+    elif person == '2sg': result = add_second_singular_possessive(word)
+    elif person == '3sg': result = add_third_singular_possessive(word)
+    elif person == '1pl': result = add_first_plural_possessive(word)
+    elif person == '2pl': result = add_second_plural_possessive(word)
+    elif person == '3pl': result = add_third_plural_possessive(word)
+    else: result = word
+    if plural: result = add_plural_suffix(result)
+    return result
+
+def cekimle():
+    kelime = document.getElementById("kelime").value.strip()
+    sahis = document.getElementById("sahis").value
+    cogul = document.getElementById("cogul").checked
+    sonuc = conjugate_chuvash(kelime, sahis, cogul)
+    document.getElementById("sonuc").innerText = f"Sonuç: {sonuc}"
+  </py-script>
+</body>
+      </html>
